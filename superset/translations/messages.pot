@@ -14959,7 +14959,7 @@ msgstr ""
 msgid "This password is too common; please choose a less guessable one."
 msgstr ""
 
-msgid "This pivot table used a legacy per-table aggregation setting that Superset previously ignored. It now computes correctly, so totals and subtotals may look different than before. Please validate them, then accept this notice or save the chart."
+msgid "This pivot table used a legacy per-table aggregation setting that could be stale or incorrect, depending on which version you upgraded from. It now computes correctly, so totals and subtotals may look different than before. Please validate them, then accept this notice or save the chart."
 msgstr ""
 
 msgid "This saved filter state predates the member-ID format. Reset it and explicitly choose its values again."
