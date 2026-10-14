@@ -55,6 +55,10 @@ from superset.exceptions import (
 from superset.explorables.base import Explorable
 from superset.extensions import cache_manager, security_manager
 from superset.models.helpers import QueryResult
+from superset.semantic_layers.exceptions import (
+    SemanticLayerExecutionError,
+    SemanticLayerQueryRejectedError,
+)
 from superset.semantic_layers.models import SemanticView
 from superset.superset_typing import AdhocColumn, AdhocMetric, Column
 from superset.utils import csv, excel
@@ -636,6 +640,9 @@ class QueryContextProcessor:
             # key material above does not carry.
             if isinstance(annotation_datasource, SemanticView):
                 scope["metadata_version"] = annotation_datasource.metadata_generation
+                # Separates entries written before NULL filter selections were
+                # preserved from those written after.
+                scope["semantic_filter_protocol"] = "semantic-null-filters-v1"
                 if (
                     discriminator := annotation_datasource.result_cache_discriminator
                 ) is not None:
@@ -1216,7 +1223,11 @@ class QueryContextProcessor:
             command.validate()
             payload = command.run()
             return {"records": payload["queries"][0]["data"]}
-        except SemanticResultCompletenessError:
+        except (
+            SemanticLayerQueryRejectedError,
+            SemanticLayerExecutionError,
+            SemanticResultCompletenessError,
+        ):
             raise
         except SupersetException as ex:
             raise QueryObjectValidationError(error_msg_from_exception(ex)) from ex
