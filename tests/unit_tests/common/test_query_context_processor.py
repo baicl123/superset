@@ -3800,7 +3800,7 @@ def test_semantic_annotation_null_protocol_versions_parent_cache(
             return_value=chart,
         ),
     ):
-        context: dict[str, Any] = processor._annotation_cache_context(query)
+        context = processor._annotation_cache_context(query)
     legacy_context: dict[str, Any] = {"user_id": 42, "source_rls": {"7": []}}
     legacy_key: str = query.cache_key(
         datasource="native-1", annotation_context=legacy_context
